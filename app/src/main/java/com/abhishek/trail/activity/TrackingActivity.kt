@@ -1,9 +1,12 @@
-package com.abhishek.trail
+package com.abhishek.trail.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import com.abhishek.trail.LocationUpdateService
+import com.abhishek.trail.R
+import com.abhishek.trail.Utils
 
 class TrackingActivity : AppCompatActivity() {
 
