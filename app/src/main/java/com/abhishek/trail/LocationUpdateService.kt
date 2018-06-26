@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 class LocationUpdateService : Service() {
 
     private val TAG = "LocationUpdateService"
-    private val DISPLACEMENT = 1 // 10 meters
+    private val displacement = 10.toFloat()
     private val fastestInterval = TimeUnit.SECONDS.toMillis(5)
     private val updateInterval = TimeUnit.SECONDS.toMillis(10)
 
@@ -35,7 +35,7 @@ class LocationUpdateService : Service() {
         locationRequests.interval = updateInterval
         locationRequests.fastestInterval = fastestInterval
         locationRequests.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-//        locationRequests.smallestDisplacement = DISPLACEMENT.toFloat()
+//        locationRequests.smallestDisplacement = displacement
     }
 
     @SuppressLint("MissingPermission")
