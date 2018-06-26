@@ -1,21 +1,19 @@
 package com.abhishek.trail
 
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.util.Log
 import com.google.android.gms.location.*
+import java.util.concurrent.TimeUnit
 
 class LocationUpdateService : Service() {
 
-    companion object {
-
-        private const val TAG = "LocationUpdateService"
-
-        private const val DISPLACEMENT = 1 // 10 meters
-        private const val FATEST_INTERVAL = 5 * 1000 // 5 sec
-        private const val UPDATE_INTERVAL = 10 * 1000
-    }
+    private val TAG = "LocationUpdateService"
+    private val DISPLACEMENT = 1 // 10 meters
+    private val fastestInterval = TimeUnit.SECONDS.toMillis(5)
+    private val updateInterval = TimeUnit.SECONDS.toMillis(10)
 
     private val mBinder = MyBinder()
     private lateinit var locationRequests: LocationRequest
@@ -24,6 +22,7 @@ class LocationUpdateService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "onCreate() called..")
+        if (!Utils.isLocationPermissionIsGiven(this)) return
         locationProvider = LocationServices.getFusedLocationProviderClient(this)
         createLocationRequest()
         startLocationUpdates()
@@ -33,13 +32,15 @@ class LocationUpdateService : Service() {
 
     private fun createLocationRequest() {
         locationRequests = LocationRequest()
-        locationRequests.interval = UPDATE_INTERVAL.toLong()
-        locationRequests.fastestInterval = FATEST_INTERVAL.toLong()
+        locationRequests.interval = updateInterval
+        locationRequests.fastestInterval = fastestInterval
         locationRequests.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 //        locationRequests.smallestDisplacement = DISPLACEMENT.toFloat()
     }
 
+    @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
+        if (!Utils.isLocationPermissionIsGiven(this)) return
         locationProvider.requestLocationUpdates(locationRequests, locationCallback, null)
     }
 
