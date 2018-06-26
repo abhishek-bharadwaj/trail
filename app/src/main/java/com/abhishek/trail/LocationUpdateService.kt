@@ -3,7 +3,6 @@ package com.abhishek.trail
 import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
-import android.os.Binder
 import android.util.Log
 import com.google.android.gms.location.*
 import java.util.concurrent.TimeUnit
@@ -15,7 +14,6 @@ class LocationUpdateService : Service() {
     private val fastestInterval = TimeUnit.SECONDS.toMillis(5)
     private val updateInterval = TimeUnit.SECONDS.toMillis(10)
 
-    private val mBinder = MyBinder()
     private lateinit var locationRequests: LocationRequest
     private lateinit var locationProvider: FusedLocationProviderClient
 
@@ -28,7 +26,7 @@ class LocationUpdateService : Service() {
         startLocationUpdates()
     }
 
-    override fun onBind(intent: Intent?) = mBinder
+    override fun onBind(intent: Intent?) = null
 
     private fun createLocationRequest() {
         locationRequests = LocationRequest()
@@ -44,12 +42,14 @@ class LocationUpdateService : Service() {
         locationProvider.requestLocationUpdates(locationRequests, locationCallback, null)
     }
 
+    private fun stopLocationUpdates() {
+        locationProvider.removeLocationUpdates(locationCallback)
+    }
+
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
-            Log.d(TAG, "location updates received..")
+            Log.d(TAG, "location updates received.. ${System.currentTimeMillis()}")
         }
     }
-
-    inner class MyBinder : Binder()
 }
