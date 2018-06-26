@@ -1,4 +1,4 @@
-package com.abhishek.trail.data
+package com.abhishek.trail
 
 object Constant {
     object LocationTable {
