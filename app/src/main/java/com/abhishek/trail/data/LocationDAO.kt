@@ -15,7 +15,7 @@ interface LocationDAO {
     fun insert(messages: List<LocationData>)
 
     @Query("select * from ${Constant.LocationTable.TABLE_NAME} WHERE ${Constant.LocationTable.COLUMN_IS_SYNCED} = 0")
-    fun getUnSyncedData(key: String): List<LocationData>
+    fun getUnSyncedData(): List<LocationData>
 
     @Query("delete from ${Constant.LocationTable.TABLE_NAME}")
     fun deleteAll()
