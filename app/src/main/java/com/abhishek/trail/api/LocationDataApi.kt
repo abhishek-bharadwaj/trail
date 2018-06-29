@@ -18,7 +18,7 @@ object LocationDataApi {
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
-        Retrofit.Builder().baseUrl("http://ptsv2.com")
+        Retrofit.Builder().baseUrl("https://api.locus.sh/")
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .client(client)
@@ -31,7 +31,7 @@ object LocationDataApi {
 
     interface ApiService {
 
-        @POST("/t/8q2o6-1530243977/post")
+        @POST("v1/client/test/user/candidate/location")
         fun postData(@Body data: List<LocationPostObject>): Single<Void>
     }
 }

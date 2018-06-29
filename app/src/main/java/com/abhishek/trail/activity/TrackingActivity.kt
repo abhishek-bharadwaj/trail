@@ -45,6 +45,11 @@ class TrackingActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        unbindService(connection)
+        super.onDestroy()
+    }
+
     private fun setBtnText(isTracking: Boolean) {
         btn_track.text = if (isTracking) "Stop Tracking" else "Start tracking"
     }
