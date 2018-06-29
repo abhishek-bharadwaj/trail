@@ -5,9 +5,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.util.Log
-import com.abhishek.trail.data.LocationData
-import com.abhishek.trail.data.LocationDatabase
-import com.abhishek.trail.data.LocationDbHelper
+import com.abhishek.trail.data.LocationSyncHelper
 import com.google.android.gms.location.*
 import java.util.concurrent.TimeUnit
 
@@ -59,7 +57,7 @@ class LocationUpdateService : Service() {
             Log.d(Constant.DEBUG_TAG, "location updates received.. $timeStamp")
             val location = result?.locations?.get(0) ?: return
             // Insert location data to DB
-            LocationDbHelper.saveLocationData(location, timeStamp)
+            LocationSyncHelper.saveLocationData(location, timeStamp)
         }
     }
 
