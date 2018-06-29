@@ -3,6 +3,8 @@ package com.abhishek.trail.data
 import android.location.Location
 import android.util.Log
 import com.abhishek.trail.Constant
+import com.abhishek.trail.MyApplication
+import com.abhishek.trail.Utils
 import com.abhishek.trail.api.LocationDataApi
 import com.abhishek.trail.api.LocationPostObject
 import io.reactivex.Completable
@@ -39,6 +41,7 @@ object LocationSyncHelper {
     }
 
     fun postUnSyncedLocationData() {
+        if (!Utils.isNetworkAvailable(MyApplication.mContext)) return
         Single.defer {
             return@defer Single.just(LocationDatabase.getInstance().locationDataDao().getUnSyncedData())
         }.subscribeOn(Schedulers.io())
@@ -59,6 +62,7 @@ object LocationSyncHelper {
     }
 
     fun postData(locationData: List<LocationData>) {
+        if (!Utils.isNetworkAvailable(MyApplication.mContext)) return
         val locationPostData: MutableList<LocationPostObject> = mutableListOf()
         locationData.forEach {
             locationPostData.add(LocationPostObject(it.latitude,

@@ -1,3 +1,6 @@
 package com.abhishek.trail.api
 
-class LocationPostObject(val latitude: Double?, val longitude: Double?)
+import com.google.gson.annotations.SerializedName
+
+class LocationPostObject(@SerializedName("latitude") val latitude: Double?,
+                         @SerializedName("longitude") val longitude: Double?)
