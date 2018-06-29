@@ -42,14 +42,7 @@ class TrackingActivity : AppCompatActivity() {
             } else {
                 stopTracking()
             }
-            Pref.setIsTracking(!isTracking)
-            setBtnText(!isTracking)
         }
-    }
-
-    override fun onDestroy() {
-        unbindService(connection)
-        super.onDestroy()
     }
 
     private fun setBtnText(isTracking: Boolean) {
@@ -112,10 +105,14 @@ class TrackingActivity : AppCompatActivity() {
     private fun startTracking() {
         val intent = Intent(this, LocationUpdateService::class.java)
         bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        Pref.setIsTracking(true)
+        setBtnText(true)
     }
 
     private fun stopTracking() {
         trackerService?.stopLocationUpdates();
+        Pref.setIsTracking(false)
+        setBtnText(false)
     }
 
     private var connection: ServiceConnection = object : ServiceConnection {

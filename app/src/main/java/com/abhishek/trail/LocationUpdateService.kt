@@ -46,6 +46,7 @@ class LocationUpdateService : Service() {
     fun stopLocationUpdates() {
         locationProvider.removeLocationUpdates(locationCallback)
         stopSelf()
+        Log.d(Constant.DEBUG_TAG, "location updates stopped!")
     }
 
     private val locationCallback = object : LocationCallback() {
