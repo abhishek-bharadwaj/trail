@@ -28,6 +28,10 @@ class LocationUpdateService : Service() {
         startLocationUpdates()
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_STICKY
+    }
+
     override fun onBind(intent: Intent?) = binder
 
     private fun createLocationRequest() {
