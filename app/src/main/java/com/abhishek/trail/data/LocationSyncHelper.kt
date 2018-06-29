@@ -25,6 +25,7 @@ object LocationSyncHelper {
             .subscribe(object : CompletableObserver {
                 override fun onComplete() {
                     Log.d(Constant.DEBUG_TAG, "Data inserted successfully")
+                    postUnSyncedLocationData()
                 }
 
                 override fun onSubscribe(d: Disposable) {
@@ -37,7 +38,7 @@ object LocationSyncHelper {
             })
     }
 
-    fun postUnSyncedLocationDataAndPost() {
+    fun postUnSyncedLocationData() {
         Single.defer {
             return@defer Single.just(LocationDatabase.getInstance().locationDataDao().getUnSyncedData())
         }.subscribeOn(Schedulers.io())
@@ -83,6 +84,27 @@ object LocationSyncHelper {
     }
 
     fun markLocationSynced(locationData: List<LocationData>) {
+        Completable.defer {
+            val dao = LocationDatabase.getInstance().locationDataDao()
+            locationData.forEach {
+                dao.markAsSync(it)
+            }
+            Completable.complete()
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : CompletableObserver {
+                override fun onComplete() {
+                    Log.d(Constant.DEBUG_TAG, "All data marked as synced")
+                    postUnSyncedLocationData()
+                }
 
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(Constant.DEBUG_TAG, "Data marking sync failed $e")
+                }
+            })
     }
 }
