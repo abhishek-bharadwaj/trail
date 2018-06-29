@@ -43,6 +43,7 @@ class LocationUpdateService : Service() {
 
     private fun stopLocationUpdates() {
         locationProvider.removeLocationUpdates(locationCallback)
+        stopSelf()
     }
 
     private val locationCallback = object : LocationCallback() {

@@ -30,19 +30,16 @@ class TrackingActivity : AppCompatActivity() {
         setBtnText(Pref.isTracking())
         btn_track.setOnClickListener {
             val isTracking = Pref.isTracking()
-            Pref.setIsTracking(!isTracking)
             if (isTracking) {
                 checkForPermissionAndStartTracking()
             }
+            Pref.setIsTracking(!isTracking)
+            setBtnText(!isTracking)
         }
     }
 
-    private fun setBtnText(isTracking: Boolean) =
-        if (isTracking) "Stop Tracking" else "Start tracking"
-
-    override fun onResume() {
-        super.onResume()
-        checkForPermissionAndStartTracking()
+    private fun setBtnText(isTracking: Boolean) {
+        btn_track.text = if (isTracking) "Stop Tracking" else "Start tracking"
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
