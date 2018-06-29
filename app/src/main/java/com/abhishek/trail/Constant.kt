@@ -1,6 +1,9 @@
 package com.abhishek.trail
 
 object Constant {
+
+    const val DEBUG_TAG = "TrailLog"
+
     object LocationTable {
 
         const val TABLE_NAME = "location_data"

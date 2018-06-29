@@ -1,14 +1,20 @@
 package com.abhishek.trail.activity
 
 import android.Manifest
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.IBinder
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
+import com.abhishek.trail.Constant
 import com.abhishek.trail.LocationUpdateService
 import com.abhishek.trail.R
 import com.abhishek.trail.Utils
@@ -22,6 +28,7 @@ class TrackingActivity : AppCompatActivity() {
     }
 
     private var permissionDialog: AlertDialog? = null
+    private var trackerService: LocationUpdateService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +43,11 @@ class TrackingActivity : AppCompatActivity() {
             Pref.setIsTracking(!isTracking)
             setBtnText(!isTracking)
         }
+    }
+
+    override fun onDestroy() {
+        unbindService(connection)
+        super.onDestroy()
     }
 
     private fun setBtnText(isTracking: Boolean) {
@@ -96,7 +108,29 @@ class TrackingActivity : AppCompatActivity() {
     }
 
     private fun startTracking() {
-        startService(Intent(this, LocationUpdateService::class.java))
+        val intent = Intent(this, LocationUpdateService::class.java)
+        bindService(intent, connection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun stopTracking() {
+        trackerService?.stopLocationUpdates();
+    }
+
+    private var connection: ServiceConnection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, binder: IBinder) {
+            try {
+                val b = binder as LocationUpdateService.MyBinder
+                trackerService = b.getService()
+            } catch (e: Exception) {
+                Log.e(Constant.DEBUG_TAG, e.toString())
+            }
+
+        }
+
+        override fun onServiceDisconnected(className: ComponentName) {
+            trackerService = null
+        }
     }
 
     private fun showToast(message: String) {
