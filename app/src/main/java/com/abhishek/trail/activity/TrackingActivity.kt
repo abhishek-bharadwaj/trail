@@ -37,8 +37,10 @@ class TrackingActivity : AppCompatActivity() {
         setBtnText(Pref.isTracking())
         btn_track.setOnClickListener {
             val isTracking = Pref.isTracking()
-            if (isTracking) {
+            if (!isTracking) {
                 checkForPermissionAndStartTracking()
+            } else {
+                stopTracking()
             }
             Pref.setIsTracking(!isTracking)
             setBtnText(!isTracking)
