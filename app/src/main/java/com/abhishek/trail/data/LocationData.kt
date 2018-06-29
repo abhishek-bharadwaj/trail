@@ -7,9 +7,9 @@ import com.abhishek.trail.Constant
 
 @Entity(tableName = Constant.LocationTable.TABLE_NAME)
 class LocationData(@ColumnInfo(name = Constant.LocationTable.COLUMN_LAT)
-                   var latitude: Long? = null,
+                   var latitude: Double? = null,
                    @ColumnInfo(name = Constant.LocationTable.COLUMN_LONG)
-                   var longitude: Long? = null,
+                   var longitude: Double? = null,
                    @ColumnInfo(name = Constant.LocationTable.COLUMN_TIMESTAMP)
                    @PrimaryKey
                    var timestamp: Long? = null,

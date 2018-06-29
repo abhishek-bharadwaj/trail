@@ -5,12 +5,15 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.util.Log
+import com.abhishek.trail.data.LocationData
+import com.abhishek.trail.data.LocationDatabase
+import com.abhishek.trail.data.LocationDbHelper
 import com.google.android.gms.location.*
 import java.util.concurrent.TimeUnit
 
 class LocationUpdateService : Service() {
 
-    private val displacement = 10.toFloat()
+    private val displacement = 100.toFloat()
     private val fastestInterval = TimeUnit.SECONDS.toMillis(5)
     private val updateInterval = TimeUnit.SECONDS.toMillis(10)
     private val binder = MyBinder()
@@ -52,7 +55,11 @@ class LocationUpdateService : Service() {
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
-            Log.d(Constant.DEBUG_TAG, "location updates received.. ${System.currentTimeMillis()}")
+            val timeStamp = System.currentTimeMillis()
+            Log.d(Constant.DEBUG_TAG, "location updates received.. $timeStamp")
+            val location = result?.locations?.get(0) ?: return
+            // Insert location data to DB
+            LocationDbHelper.saveLocationData(location, timeStamp)
         }
     }
 
