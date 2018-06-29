@@ -16,7 +16,10 @@ object LocationDataApi {
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
-        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        val client = OkHttpClient.Builder()
+            .addInterceptor(BasicAuthInterceptor("test/candidate", "c00e-4764"))
+            .addInterceptor(interceptor)
+            .build()
 
         Retrofit.Builder().baseUrl("https://api.locus.sh/")
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))

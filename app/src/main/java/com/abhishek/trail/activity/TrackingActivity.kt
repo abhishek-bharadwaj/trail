@@ -27,6 +27,7 @@ class TrackingActivity : AppCompatActivity() {
         private const val PERMISSION_REQUEST_LOCATION = 34142
     }
 
+    private var isBound = false
     private var permissionDialog: AlertDialog? = null
     private var trackerService: LocationUpdateService? = null
 
@@ -46,7 +47,7 @@ class TrackingActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        unbindService(connection)
+        if (isBound) unbindService(connection)
         super.onDestroy()
     }
 
@@ -110,6 +111,7 @@ class TrackingActivity : AppCompatActivity() {
     private fun startTracking() {
         val intent = Intent(this, LocationUpdateService::class.java)
         bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        isBound = true
         Pref.setIsTracking(true)
         setBtnText(true)
     }
