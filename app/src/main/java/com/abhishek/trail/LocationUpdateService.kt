@@ -19,7 +19,6 @@ class LocationUpdateService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "onCreate() called..")
         if (!Utils.isLocationPermissionIsGiven(this)) return
         locationProvider = LocationServices.getFusedLocationProviderClient(this)
         createLocationRequest()

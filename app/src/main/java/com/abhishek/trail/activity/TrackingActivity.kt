@@ -12,6 +12,8 @@ import android.widget.Toast
 import com.abhishek.trail.LocationUpdateService
 import com.abhishek.trail.R
 import com.abhishek.trail.Utils
+import com.abhishek.trail.data.Pref
+import kotlinx.android.synthetic.main.activity_tracking.*
 
 class TrackingActivity : AppCompatActivity() {
 
@@ -24,7 +26,19 @@ class TrackingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking)
+
+        setBtnText(Pref.isTracking())
+        btn_track.setOnClickListener {
+            val isTracking = Pref.isTracking()
+            Pref.setIsTracking(!isTracking)
+            if (isTracking) {
+                checkForPermissionAndStartTracking()
+            }
+        }
     }
+
+    private fun setBtnText(isTracking: Boolean) =
+        if (isTracking) "Stop Tracking" else "Start tracking"
 
     override fun onResume() {
         super.onResume()
