@@ -4,6 +4,7 @@ import android.location.Location
 import android.util.Log
 import com.abhishek.trail.Constant
 import com.abhishek.trail.api.LocationDataApi
+import com.abhishek.trail.api.LocationPostObject
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.Single
@@ -43,7 +44,7 @@ object LocationSyncHelper {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : SingleObserver<List<LocationData>> {
                 override fun onSuccess(t: List<LocationData>) {
-
+                    postData(t)
                 }
 
                 override fun onSubscribe(d: Disposable) {
@@ -54,5 +55,34 @@ object LocationSyncHelper {
                     Log.e(Constant.DEBUG_TAG, "Data insertion failed $e")
                 }
             })
+    }
+
+    fun postData(locationData: List<LocationData>) {
+        val locationPostData: MutableList<LocationPostObject> = mutableListOf()
+        locationData.forEach {
+            locationPostData.add(LocationPostObject(it.latitude,
+                it.longitude))
+        }
+        LocationDataApi.postLocation(locationPostData)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : SingleObserver<Void> {
+                override fun onSuccess(t: Void) {
+                    Log.d(Constant.DEBUG_TAG, "Location posted successfully")
+                    markLocationSynced(locationData)
+                }
+
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.d(Constant.DEBUG_TAG, "Location posting failed $e")
+                }
+            })
+    }
+
+    fun markLocationSynced(locationData: List<LocationData>) {
+
     }
 }
