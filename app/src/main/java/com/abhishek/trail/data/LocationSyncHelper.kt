@@ -8,8 +8,6 @@ import com.abhishek.trail.Utils
 import com.abhishek.trail.api.LocationDataApi
 import com.abhishek.trail.api.LocationObj
 import com.abhishek.trail.api.LocationPostObject
-import com.abhishek.trail.data.LocationSyncHelper.postUnSyncedLocationData
-import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.Single
@@ -70,8 +68,8 @@ object LocationSyncHelper {
         LocationDataApi.postLocation(postObj)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<Void> {
-                override fun onSuccess(t: Void) {
+            .subscribe(object : CompletableObserver {
+                override fun onComplete() {
                     Log.d(Constant.DEBUG_TAG, "Location posted successfully")
                     markLocationSynced(locationData)
                 }
@@ -81,7 +79,6 @@ object LocationSyncHelper {
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.d(Constant.DEBUG_TAG, "Location posting failed $e")
                 }
             })
     }

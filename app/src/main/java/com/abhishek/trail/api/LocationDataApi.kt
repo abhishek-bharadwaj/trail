@@ -1,7 +1,7 @@
 package com.abhishek.trail.api
 
 import com.google.gson.GsonBuilder
-import io.reactivex.Single
+import io.reactivex.Completable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -35,6 +35,6 @@ object LocationDataApi {
     interface ApiService {
 
         @POST("v1/client/test/user/candidate/location")
-        fun postData(@Body data: LocationPostObject): Single<Void>
+        fun postData(@Body data: LocationPostObject): Completable
     }
 }
