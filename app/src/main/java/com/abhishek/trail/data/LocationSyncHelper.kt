@@ -87,6 +87,7 @@ object LocationSyncHelper {
     fun markLocationSynced(locationData: LocationData) {
         Completable.defer {
             val dao = LocationDatabase.getInstance().locationDataDao()
+            locationData.isSynced = true
             dao.markAsSync(locationData)
             Completable.complete()
         }.subscribeOn(Schedulers.io())
