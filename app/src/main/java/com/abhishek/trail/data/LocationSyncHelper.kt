@@ -49,6 +49,7 @@ object LocationSyncHelper {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : SingleObserver<List<LocationData>> {
                 override fun onSuccess(t: List<LocationData>) {
+                    Log.d(Constant.DEBUG_TAG, "${t.size} no of unsynced location found..")
                     t.forEach { postData(it) }
                 }
 
@@ -93,7 +94,6 @@ object LocationSyncHelper {
             .subscribe(object : CompletableObserver {
                 override fun onComplete() {
                     Log.d(Constant.DEBUG_TAG, "All data marked as synced")
-                    postUnSyncedLocationData()
                 }
 
                 override fun onSubscribe(d: Disposable) {
