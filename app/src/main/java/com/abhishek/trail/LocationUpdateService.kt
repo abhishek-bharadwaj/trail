@@ -43,8 +43,9 @@ class LocationUpdateService : Service() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun startLocationUpdates() {
+    fun startLocationUpdates() {
         if (!Utils.isLocationPermissionIsGiven(this)) return
+        Log.d(Constant.DEBUG_TAG, "location updates started!")
         locationProvider.requestLocationUpdates(locationRequests, locationCallback, null)
     }
 

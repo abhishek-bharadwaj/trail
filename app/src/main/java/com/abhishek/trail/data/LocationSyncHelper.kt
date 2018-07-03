@@ -93,7 +93,7 @@ object LocationSyncHelper {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : CompletableObserver {
                 override fun onComplete() {
-                    Log.d(Constant.DEBUG_TAG, "All data marked as synced")
+                    Log.d(Constant.DEBUG_TAG, "Data marked as synced")
                 }
 
                 override fun onSubscribe(d: Disposable) {

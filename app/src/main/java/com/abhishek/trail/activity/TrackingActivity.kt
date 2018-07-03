@@ -17,7 +17,6 @@ import android.widget.Toast
 import com.abhishek.trail.Constant
 import com.abhishek.trail.LocationUpdateService
 import com.abhishek.trail.R
-import com.abhishek.trail.Utils
 import com.abhishek.trail.data.Pref
 import kotlinx.android.synthetic.main.activity_tracking.*
 
@@ -73,22 +72,20 @@ class TrackingActivity : AppCompatActivity() {
     }
 
     private fun checkForPermissionAndStartTracking() {
-        if (!Utils.isLocationPermissionIsGiven(this)) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    showPermissionRequestDialog()
-                } else {
-                    ActivityCompat.requestPermissions(this,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        PERMISSION_REQUEST_LOCATION)
-                }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                showPermissionRequestDialog()
+            } else {
+                ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    PERMISSION_REQUEST_LOCATION)
             }
-            return
+        } else {
+            startTracking()
         }
-        startTracking()
     }
 
     private fun showPermissionRequestDialog() {
@@ -111,13 +108,14 @@ class TrackingActivity : AppCompatActivity() {
     private fun startTracking() {
         val intent = Intent(this, LocationUpdateService::class.java)
         bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        trackerService?.startLocationUpdates()
         isBound = true
         Pref.setIsTracking(true)
         setBtnText(true)
     }
 
     private fun stopTracking() {
-        trackerService?.stopLocationUpdates();
+        trackerService?.stopLocationUpdates()
         Pref.setIsTracking(false)
         setBtnText(false)
     }
