@@ -6,7 +6,10 @@ import com.abhishek.trail.Constant
 import com.abhishek.trail.MyApplication
 import com.abhishek.trail.Utils
 import com.abhishek.trail.api.LocationDataApi
+import com.abhishek.trail.api.LocationObj
 import com.abhishek.trail.api.LocationPostObject
+import com.abhishek.trail.data.LocationSyncHelper.postUnSyncedLocationData
+import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.Single
@@ -48,7 +51,7 @@ object LocationSyncHelper {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : SingleObserver<List<LocationData>> {
                 override fun onSuccess(t: List<LocationData>) {
-                    postData(t)
+                    t.forEach { postData(it) }
                 }
 
                 override fun onSubscribe(d: Disposable) {
@@ -61,14 +64,10 @@ object LocationSyncHelper {
             })
     }
 
-    fun postData(locationData: List<LocationData>) {
+    fun postData(locationData: LocationData) {
         if (!Utils.isNetworkAvailable(MyApplication.mContext)) return
-        val locationPostData: MutableList<LocationPostObject> = mutableListOf()
-        locationData.forEach {
-            locationPostData.add(LocationPostObject(it.latitude,
-                it.longitude))
-        }
-        LocationDataApi.postLocation(locationPostData)
+        val postObj = LocationPostObject(LocationObj(locationData.latitude, locationData.longitude))
+        LocationDataApi.postLocation(postObj)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : SingleObserver<Void> {
@@ -87,12 +86,10 @@ object LocationSyncHelper {
             })
     }
 
-    fun markLocationSynced(locationData: List<LocationData>) {
+    fun markLocationSynced(locationData: LocationData) {
         Completable.defer {
             val dao = LocationDatabase.getInstance().locationDataDao()
-            locationData.forEach {
-                dao.markAsSync(it)
-            }
+            dao.markAsSync(locationData)
             Completable.complete()
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

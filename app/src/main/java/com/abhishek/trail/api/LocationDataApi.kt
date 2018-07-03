@@ -29,12 +29,12 @@ object LocationDataApi {
             .create(ApiService::class.java)
     }
 
-    fun postLocation(locationPostData: List<LocationPostObject>) =
+    fun postLocation(locationPostData: LocationPostObject) =
         apiService.postData(locationPostData)
 
     interface ApiService {
 
         @POST("v1/client/test/user/candidate/location")
-        fun postData(@Body data: List<LocationPostObject>): Single<Void>
+        fun postData(@Body data: LocationPostObject): Single<Void>
     }
 }
